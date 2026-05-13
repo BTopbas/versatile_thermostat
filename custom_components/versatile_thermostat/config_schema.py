@@ -133,6 +133,9 @@ STEP_MAIN_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
         vol.Required(CONF_TEMP_SENSOR): selector.EntitySelector(
             selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]),
         ),
+        vol.Optional(CONF_HUMIDITY_SENSOR): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]),
+        ),
         vol.Optional(CONF_LAST_SEEN_TEMP_SENSOR): selector.EntitySelector(
             selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_DATETIME_DOMAIN, NUMBER_DOMAIN]),
         ),
@@ -191,6 +194,9 @@ STEP_CENTRAL_MAIN_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
         vol.Required(CONF_EXTERNAL_TEMP_SENSOR): selector.EntitySelector(
             selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN]),
         ),
+        vol.Optional(CONF_HUMIDITY_SENSOR): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]),
+        ),
         vol.Required(CONF_TEMP_MIN, default=7): vol.Coerce(float),
         vol.Required(CONF_TEMP_MAX, default=35): vol.Coerce(float),
 
@@ -202,6 +208,9 @@ STEP_CENTRAL_SPEC_MAIN_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
     {
         vol.Required(CONF_EXTERNAL_TEMP_SENSOR): selector.EntitySelector(
             selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN]),
+        ),
+        vol.Optional(CONF_HUMIDITY_SENSOR): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]),
         ),
         vol.Required(CONF_TEMP_MIN, default=7): vol.Coerce(float),
         vol.Required(CONF_TEMP_MAX, default=35): vol.Coerce(float),

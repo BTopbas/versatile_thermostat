@@ -1109,6 +1109,9 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
     @property
     def current_humidity(self) -> float | None:
         """Return the humidity."""
+        if self._humidity_sensor_entity_id is not None:
+            return self._humidity
+
         if self.underlying_entity(0):
             return self.underlying_entity(0).current_humidity
 
