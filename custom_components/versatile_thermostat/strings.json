@@ -101,6 +101,7 @@
         "description": "Linked entities attributes",
         "data": {
           "underlying_entity_ids": "The device(s) to be controlled",
+          "humidity_sensor_entity_id": "Humidity sensor entity id",
           "heater_keep_alive": "Switch keep-alive interval in seconds",
           "proportional_function": "Algorithm",
           "ac_mode": "AC mode",
@@ -118,6 +119,7 @@
         },
         "data_description": {
           "underlying_entity_ids": "The device(s) to be controlled - 1 is required",
+          "humidity_sensor_entity_id": "Optional humidity sensor entity id used for current humidity",
           "heater_keep_alive": "Optional heater switch state refresh interval. Leave empty if not required.",
           "proportional_function": "Algorithm to use (TPI is the only one for now)",
           "ac_mode": "Use the Air Conditioning (AC) mode",
@@ -487,6 +489,7 @@
         "description": "Linked entities attributes",
         "data": {
           "underlying_entity_ids": "The device(s) to be controlled",
+          "humidity_sensor_entity_id": "Humidity sensor entity id",
           "heater_keep_alive": "Switch keep-alive interval in seconds",
           "proportional_function": "Algorithm",
           "ac_mode": "AC mode",
@@ -504,6 +507,7 @@
         },
         "data_description": {
           "underlying_entity_ids": "The device(s) to be controlled - 1 is required",
+          "humidity_sensor_entity_id": "Optional humidity sensor entity id used for current humidity",
           "heater_keep_alive": "Optional heater switch state refresh interval. Leave empty if not required.",
           "proportional_function": "Algorithm to use (TPI is the only one for now)",
           "ac_mode": "Use the Air Conditioning (AC) mode",

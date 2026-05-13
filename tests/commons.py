@@ -1087,6 +1087,31 @@ async def send_ext_temperature_change_event(
         await asyncio.sleep(0.1)
 
 
+async def send_humidity_change_event(entity: BaseThermostat, new_humidity, date, sleep=True):
+    """Sending a new humidity event simulating a change on humidity sensor."""
+    _LOGGER.info(
+        "------- Testu: sending send_humidity_change_event, new_humidity=%.2f date=%s on %s",
+        new_humidity,
+        date,
+        entity,
+    )
+    humidity_event = Event(
+        EVENT_STATE_CHANGED,
+        {
+            "new_state": State(
+                entity_id=entity.entity_id,
+                state=new_humidity,
+                last_changed=date,
+                last_updated=date,
+            )
+        },
+    )
+    await entity._async_humidity_changed(humidity_event)
+    if sleep:
+        await entity.hass.async_block_till_done()
+        await asyncio.sleep(0.1)
+
+
 async def send_power_change_event(entity: BaseThermostat, new_power, date, sleep=True):
     """Sending a new power event simulating a change on power sensor"""
     _LOGGER.info(

@@ -599,6 +599,109 @@ async def test_bug_508(
     entity.remove_thermostat()
 
 
+async def test_over_climate_current_humidity_uses_configured_sensor(
+    hass: HomeAssistant,
+    skip_hass_states_is_state,
+    skip_turn_on_off_heater,
+    skip_send_event,
+):
+    """Test that a configured humidity sensor overrides the underlying humidity."""
+    tz = get_tz(hass)
+    now: datetime = datetime.now(tz=tz)
+
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="TheOverClimateMockName",
+        unique_id="uniqueId",
+        data=PARTIAL_CLIMATE_NOT_REGULATED_CONFIG
+        | {CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor"},
+    )
+
+    await create_and_register_mock_climate(
+        hass,
+        "mock_climate",
+        "MockClimateName",
+        {},
+        hvac_mode=VThermHvacMode_OFF,
+        hvac_action=HVACAction.OFF,
+    )
+    await register_mock_entity(
+        hass,
+        MockTemperatureSensor(hass, "mock_humidity_sensor", "MockHumiditySensor", value=55),
+        SENSOR_DOMAIN,
+    )
+
+    entity: ThermostatOverClimate = await create_thermostat(
+        hass, entry, "climate.theoverclimatemockname"
+    )
+
+    assert entity.current_humidity == 55
+    assert hass.states.get(entity.entity_id).attributes["current_humidity"] == 55
+
+    await send_humidity_change_event(entity, 61, now, True)
+
+    assert entity.current_humidity == 61
+    assert hass.states.get(entity.entity_id).attributes["current_humidity"] == 61
+
+    entity.remove_thermostat()
+
+
+async def test_over_climate_current_humidity_falls_back_to_underlying_when_sensor_unavailable(
+    hass: HomeAssistant,
+    skip_hass_states_is_state,
+    skip_turn_on_off_heater,
+    skip_send_event,
+):
+    """Test that the underlying humidity is reused when the configured sensor is unavailable."""
+    tz = get_tz(hass)
+    now: datetime = datetime.now(tz=tz)
+
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        title="TheOverClimateMockName",
+        unique_id="uniqueId",
+        data=PARTIAL_CLIMATE_NOT_REGULATED_CONFIG
+        | {CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor"},
+    )
+
+    await create_and_register_mock_climate(
+        hass,
+        "mock_climate",
+        "MockClimateName",
+        {},
+        hvac_mode=VThermHvacMode_OFF,
+        hvac_action=HVACAction.OFF,
+    )
+    await register_mock_entity(
+        hass,
+        MockTemperatureSensor(hass, "mock_humidity_sensor", "MockHumiditySensor", value=55),
+        SENSOR_DOMAIN,
+    )
+
+    entity: ThermostatOverClimate = await create_thermostat(
+        hass, entry, "climate.theoverclimatemockname"
+    )
+
+    unavailable_event = Event(
+        EVENT_STATE_CHANGED,
+        {
+            "new_state": State(
+                entity_id=entity.entity_id,
+                state=STATE_UNAVAILABLE,
+                last_changed=now,
+                last_updated=now,
+            )
+        },
+    )
+    await entity._async_humidity_changed(unavailable_event)
+    await hass.async_block_till_done()
+
+    assert entity.current_humidity == 40
+    assert hass.states.get(entity.entity_id).attributes["current_humidity"] == 40
+
+    entity.remove_thermostat()
+
+
 async def test_bug_524(hass: HomeAssistant, skip_hass_states_is_state):
     """Test when switching from Cool to Heat the new temperature in Heat mode should be used"""
 

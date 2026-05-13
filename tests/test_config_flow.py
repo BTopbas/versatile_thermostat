@@ -391,6 +391,7 @@ async def test_user_config_flow_over_climate(
         result["flow_id"],
         user_input={
             CONF_UNDERLYING_LIST: ["climate.mock_climate"],
+            CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor",
             CONF_AC_MODE: False,
             CONF_AUTO_REGULATION_MODE: CONF_AUTO_REGULATION_STRONG,
             CONF_AUTO_REGULATION_DTEMP: 0.5,
@@ -502,33 +503,42 @@ async def test_user_config_flow_over_climate(
     )
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result.get("errors") is None
-    assert result["data"] == MOCK_TH_OVER_CLIMATE_USER_CONFIG | MOCK_TH_OVER_CLIMATE_MAIN_CONFIG | MOCK_TH_OVER_CLIMATE_CENTRAL_MAIN_CONFIG | MOCK_TH_OVER_CLIMATE_TYPE_CONFIG | {
-        CONF_SAFETY_DELAY_MIN: 5,
-        CONF_SAFETY_MIN_ON_PERCENT: 0.4,
-        CONF_SAFETY_DEFAULT_ON_PERCENT: 0.3,
-        CONF_REPAIR_INCORRECT_STATE: False,
-    } | MOCK_DEFAULT_FEATURE_CONFIG | {
-        CONF_USE_MAIN_CENTRAL_CONFIG: False,
-        CONF_USE_PRESETS_CENTRAL_CONFIG: False,
-        CONF_USE_MOTION_FEATURE: False,
-        CONF_USE_POWER_FEATURE: False,
-        CONF_USE_PRESENCE_FEATURE: False,
-        CONF_USE_WINDOW_FEATURE: False,
-        CONF_USE_AUTO_START_STOP_FEATURE: False,
-        CONF_USE_CENTRAL_BOILER_FEATURE: False,
-        CONF_USE_TPI_CENTRAL_CONFIG: False,
-        CONF_USE_WINDOW_CENTRAL_CONFIG: False,
-        CONF_USE_MOTION_CENTRAL_CONFIG: False,
-        CONF_USE_POWER_CENTRAL_CONFIG: False,
-        CONF_USE_PRESENCE_CENTRAL_CONFIG: False,
-        CONF_USE_ADVANCED_CENTRAL_CONFIG: False,
-        CONF_USE_LOCK_CENTRAL_CONFIG: False,
-        CONF_USED_BY_CENTRAL_BOILER: False,
-        CONF_USE_CENTRAL_MODE: False,
-        CONF_AUTO_REGULATION_MODE: CONF_AUTO_REGULATION_STRONG,
-        CONF_AUTO_START_STOP_LEVEL: AUTO_START_STOP_LEVEL_NONE,
-        CONF_SYNC_DEVICE_INTERNAL_TEMP: False,
-    }
+    assert result["data"] == (
+        MOCK_TH_OVER_CLIMATE_USER_CONFIG
+        | MOCK_TH_OVER_CLIMATE_MAIN_CONFIG
+        | MOCK_TH_OVER_CLIMATE_CENTRAL_MAIN_CONFIG
+        | MOCK_TH_OVER_CLIMATE_TYPE_CONFIG
+        | {
+            CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor",
+            CONF_SAFETY_DELAY_MIN: 5,
+            CONF_SAFETY_MIN_ON_PERCENT: 0.4,
+            CONF_SAFETY_DEFAULT_ON_PERCENT: 0.3,
+            CONF_REPAIR_INCORRECT_STATE: False,
+        }
+        | MOCK_DEFAULT_FEATURE_CONFIG
+        | {
+            CONF_USE_MAIN_CENTRAL_CONFIG: False,
+            CONF_USE_PRESETS_CENTRAL_CONFIG: False,
+            CONF_USE_MOTION_FEATURE: False,
+            CONF_USE_POWER_FEATURE: False,
+            CONF_USE_PRESENCE_FEATURE: False,
+            CONF_USE_WINDOW_FEATURE: False,
+            CONF_USE_AUTO_START_STOP_FEATURE: False,
+            CONF_USE_CENTRAL_BOILER_FEATURE: False,
+            CONF_USE_TPI_CENTRAL_CONFIG: False,
+            CONF_USE_WINDOW_CENTRAL_CONFIG: False,
+            CONF_USE_MOTION_CENTRAL_CONFIG: False,
+            CONF_USE_POWER_CENTRAL_CONFIG: False,
+            CONF_USE_PRESENCE_CENTRAL_CONFIG: False,
+            CONF_USE_ADVANCED_CENTRAL_CONFIG: False,
+            CONF_USE_LOCK_CENTRAL_CONFIG: False,
+            CONF_USED_BY_CENTRAL_BOILER: False,
+            CONF_USE_CENTRAL_MODE: False,
+            CONF_AUTO_REGULATION_MODE: CONF_AUTO_REGULATION_STRONG,
+            CONF_AUTO_START_STOP_LEVEL: AUTO_START_STOP_LEVEL_NONE,
+            CONF_SYNC_DEVICE_INTERNAL_TEMP: False,
+        }
+    )
     assert result["result"]
     assert result["result"].domain == DOMAIN
     assert result["result"].version == 2

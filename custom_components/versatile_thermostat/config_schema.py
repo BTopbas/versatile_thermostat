@@ -226,15 +226,20 @@ STEP_CENTRAL_BOILER_SCHEMA = vol.Schema(
 STEP_THERMOSTAT_SWITCH = build_step_thermostat_switch_schema()  # pylint: disable=invalid-name
 
 STEP_THERMOSTAT_CLIMATE = vol.Schema(  # pylint: disable=invalid-name
-    {
-        vol.Required(CONF_UNDERLYING_LIST): selector.EntitySelector(
-            selector.EntitySelectorConfig(domain=CLIMATE_DOMAIN, multiple=True),
-        ),
-        vol.Optional(CONF_AC_MODE, default=False): cv.boolean,
-        vol.Optional(CONF_SYNC_DEVICE_INTERNAL_TEMP, default=False): cv.boolean,
-        vol.Optional(CONF_AUTO_REGULATION_MODE, default=CONF_AUTO_REGULATION_NONE): selector.SelectSelector(
-            selector.SelectSelectorConfig(
-                options=CONF_AUTO_REGULATION_MODES,
+        {
+            vol.Required(CONF_UNDERLYING_LIST): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain=CLIMATE_DOMAIN, multiple=True),
+            ),
+            vol.Optional(CONF_HUMIDITY_SENSOR): selector.EntitySelector(
+                selector.EntitySelectorConfig(
+                    domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]
+                ),
+            ),
+            vol.Optional(CONF_AC_MODE, default=False): cv.boolean,
+            vol.Optional(CONF_SYNC_DEVICE_INTERNAL_TEMP, default=False): cv.boolean,
+            vol.Optional(CONF_AUTO_REGULATION_MODE, default=CONF_AUTO_REGULATION_NONE): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=CONF_AUTO_REGULATION_MODES,
                 translation_key="auto_regulation_mode",
                 mode="dropdown",
             )
