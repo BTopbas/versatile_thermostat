@@ -15,9 +15,7 @@ from .const import *  # pylint: disable=wildcard-import, unused-wildcard-import
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 async def test_show_form(hass: HomeAssistant, init_vtherm_api) -> None:
     """Test that the form is served with no input"""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
-    )
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
 
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == SOURCE_USER
@@ -27,13 +25,9 @@ async def test_show_form(hass: HomeAssistant, init_vtherm_api) -> None:
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 # TODO Disable this test make the others tests failed
 @pytest.mark.skip
-async def test_user_config_flow_over_switch(
-    hass: HomeAssistant, skip_hass_states_get, init_central_config
-):  # pylint: disable=unused-argument
+async def test_user_config_flow_over_switch(hass: HomeAssistant, skip_hass_states_get, init_central_config):  # pylint: disable=unused-argument
     """Test the config flow with all thermostat_over_switch features and central config on"""
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
-    )
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == SOURCE_USER
 
@@ -58,9 +52,7 @@ async def test_user_config_flow_over_switch(
     ]
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "main"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "main"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "main"
     assert result.get("errors") == {}
@@ -79,9 +71,7 @@ async def test_user_config_flow_over_switch(
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "type"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "type"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "type"
     assert result.get("errors") == {}
@@ -113,37 +103,27 @@ async def test_user_config_flow_over_switch(
 
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "tpi"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "tpi"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "tpi"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_TPI_CENTRAL_CONFIG: True}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_TPI_CENTRAL_CONFIG: True})
     assert result["type"] == FlowResultType.MENU
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "presets"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "presets"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "presets"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: True}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: True})
     assert result["type"] == FlowResultType.MENU
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "features"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "features"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "features"
     assert result.get("errors") == {}
@@ -175,9 +155,7 @@ async def test_user_config_flow_over_switch(
         # "finalize" : because for motion we need an motion sensor
     ]
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "window"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "window"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "window"
     assert result.get("errors") == {}
@@ -193,9 +171,7 @@ async def test_user_config_flow_over_switch(
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "motion"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "motion"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "motion"
     assert result.get("errors") == {}
@@ -208,16 +184,12 @@ async def test_user_config_flow_over_switch(
         },
     )
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "power"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "power"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "power"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_POWER_CENTRAL_CONFIG: True}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_POWER_CENTRAL_CONFIG: True})
     assert result["type"] == FlowResultType.MENU
     assert result["step_id"] == "menu"
     assert result["menu_options"] == [
@@ -235,9 +207,7 @@ async def test_user_config_flow_over_switch(
     ]
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "presence"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "presence"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "presence"
     assert result.get("errors") == {}
@@ -253,20 +223,14 @@ async def test_user_config_flow_over_switch(
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "advanced"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "advanced"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "advanced"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_ADVANCED_CENTRAL_CONFIG: True}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_ADVANCED_CENTRAL_CONFIG: True})
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "finalize"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "finalize"})
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result.get("errors") is None
     assert result["data"] == (
@@ -303,20 +267,17 @@ async def test_user_config_flow_over_switch(
     assert result["result"].title == "TheOverSwitchMockName"
     assert isinstance(result["result"], ConfigEntry)
 
+
 @pytest.mark.parametrize("expected_lingering_tasks", [True])
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 # TODO this test fails when run in // but works alone
 # @pytest.mark.skip
-async def test_user_config_flow_over_climate(
-    hass: HomeAssistant, skip_hass_states_get
-):  # pylint: disable=unused-argument
+async def test_user_config_flow_over_climate(hass: HomeAssistant, skip_hass_states_get):  # pylint: disable=unused-argument
     """Test the config flow with all thermostat_over_climate features and never use central config.
     We don't use any features"""
     # await create_central_config(hass)
 
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
-    )
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == SOURCE_USER
 
@@ -341,9 +302,7 @@ async def test_user_config_flow_over_climate(
     assert result.get("errors") is None
 
     # 2. Main
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "main"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "main"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "main"
     assert result.get("errors") == {}
@@ -380,9 +339,7 @@ async def test_user_config_flow_over_climate(
     assert result.get("errors") is None
 
     # 4. Type
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "type"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "type"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "type"
     assert result.get("errors") == {}
@@ -415,24 +372,18 @@ async def test_user_config_flow_over_climate(
     assert result.get("errors") is None
 
     # 5. Presets
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "presets"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "presets"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "presets"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: False}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: False})
     assert result["type"] == FlowResultType.MENU
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
     # 6. Features
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "features"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "features"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "features"
     assert result.get("errors") == {}
@@ -462,9 +413,7 @@ async def test_user_config_flow_over_climate(
     ]
 
     # 7. Advanced
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "advanced"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "advanced"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "advanced"
     assert result.get("errors") == {}
@@ -498,9 +447,7 @@ async def test_user_config_flow_over_climate(
         "finalize",  # Now finalize is present
     ]
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "finalize"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "finalize"})
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result.get("errors") is None
     assert result["data"] == (
@@ -550,16 +497,12 @@ async def test_user_config_flow_over_climate(
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 # TODO Disable this test which only works alone
 # @pytest.mark.skip
-async def test_user_config_flow_over_climate_auto_start_stop(
-    hass: HomeAssistant, skip_hass_states_get
-):  # pylint: disable=unused-argument
+async def test_user_config_flow_over_climate_auto_start_stop(hass: HomeAssistant, skip_hass_states_get):  # pylint: disable=unused-argument
     """Test the config flow with auto_start_stop thermostat_over_climate features."""
     # await create_central_config(hass)
 
     # 1. start a config flow in over_climate
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
-    )
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == SOURCE_USER
 
@@ -583,9 +526,7 @@ async def test_user_config_flow_over_climate_auto_start_stop(
     assert result.get("errors") is None
 
     # 2. Add auto-start-stop feature
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "features"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "features"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "features"
     assert result.get("errors") == {}
@@ -616,9 +557,7 @@ async def test_user_config_flow_over_climate_auto_start_stop(
     ]
 
     # 3. Configure auto-start-stop attributes
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "auto_start_stop"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "auto_start_stop"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "auto_start_stop"
     assert result.get("errors") == {}
@@ -634,9 +573,7 @@ async def test_user_config_flow_over_climate_auto_start_stop(
     assert result.get("errors") is None
 
     # 4. Configure main attributes
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "main"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "main"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "main"
     assert result.get("errors") == {}
@@ -672,9 +609,7 @@ async def test_user_config_flow_over_climate_auto_start_stop(
     assert result.get("errors") is None
 
     # 5. Configure type attributes
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "type"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "type"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "type"
     assert result.get("errors") == {}
@@ -706,24 +641,18 @@ async def test_user_config_flow_over_climate_auto_start_stop(
     ]
     assert result.get("errors") is None
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "presets"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "presets"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "presets"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: False}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: False})
     assert result["type"] == FlowResultType.MENU
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
     # 6. configure advanced attributes
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "advanced"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "advanced"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "advanced"
     assert result.get("errors") == {}
@@ -758,9 +687,7 @@ async def test_user_config_flow_over_climate_auto_start_stop(
         "finalize",  # Now finalize is present
     ]
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "finalize"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "finalize"})
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result.get("errors") is None
     assert result["data"] == MOCK_TH_OVER_CLIMATE_USER_CONFIG | MOCK_TH_OVER_CLIMATE_MAIN_CONFIG | MOCK_TH_OVER_CLIMATE_CENTRAL_MAIN_CONFIG | MOCK_TH_OVER_CLIMATE_TYPE_CONFIG | {
@@ -802,16 +729,12 @@ async def test_user_config_flow_over_climate_auto_start_stop(
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 # TODO Disable this test which only works alone
 # @pytest.mark.skip
-async def test_user_config_flow_over_switch_bug_552_tpi(
-    hass: HomeAssistant, skip_hass_states_get
-):  # pylint: disable=unused-argument
+async def test_user_config_flow_over_switch_bug_552_tpi(hass: HomeAssistant, skip_hass_states_get):  # pylint: disable=unused-argument
     """Test the bug 552 - a VTherm over_switch can be configured without TPI parameters
     if 'use central config is checked with no central config"""
 
     # 1. Thermostat over_switch
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
-    )
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == SOURCE_USER
 
@@ -837,9 +760,7 @@ async def test_user_config_flow_over_switch_bug_552_tpi(
     assert result.get("errors") is None
 
     # 3. Main attributes
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "main"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "main"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "main"
     assert result.get("errors") == {}
@@ -887,9 +808,7 @@ async def test_user_config_flow_over_switch_bug_552_tpi(
     ]
 
     # 6. Type
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "type"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "type"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "type"
     assert result.get("errors") == {}
@@ -921,9 +840,7 @@ async def test_user_config_flow_over_switch_bug_552_tpi(
     ]
 
     # 8. Advanced
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "advanced"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "advanced"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "advanced"
     assert result.get("errors") == {}
@@ -963,26 +880,20 @@ async def test_user_config_flow_over_switch_bug_552_tpi(
     ]
 
     # 11. TPI
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "tpi"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "tpi"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "tpi"
     assert result.get("errors") == {}
 
     # 11. TPI 2
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_TPI_CENTRAL_CONFIG: False}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_TPI_CENTRAL_CONFIG: False})
 
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "tpi"
     assert result.get("errors") == {}
 
     # 12. Menu
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input=MOCK_TH_OVER_SWITCH_TPI_CONFIG
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input=MOCK_TH_OVER_SWITCH_TPI_CONFIG)
 
     # 11. Presets
     # We do not configure preset so we should have a default: don't use preset central config
@@ -1012,9 +923,7 @@ async def test_user_config_flow_over_switch_bug_552_tpi(
         "finalize",  # all is now configured
     ]
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "finalize"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "finalize"})
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result.get("errors") is None
     assert result["data"] == (
@@ -1065,16 +974,12 @@ async def test_user_config_flow_over_switch_bug_552_tpi(
 @pytest.mark.parametrize("expected_lingering_timers", [True])
 # TODO Disable this test which only works alone
 # @pytest.mark.skip
-async def test_user_config_flow_over_climate_valve(
-    hass: HomeAssistant, skip_hass_states_get
-):  # pylint: disable=unused-argument
+async def test_user_config_flow_over_climate_valve(hass: HomeAssistant, skip_hass_states_get):  # pylint: disable=unused-argument
     """Test the config flow with all thermostat_over_climate with the valve regulation activated.
     We don't use any features nor central config
     but we will add multiple underlying climate and valve"""
 
-    result = await hass.config_entries.flow.async_init(
-        DOMAIN, context={"source": SOURCE_USER}
-    )
+    result = await hass.config_entries.flow.async_init(DOMAIN, context={"source": SOURCE_USER})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == SOURCE_USER
 
@@ -1099,9 +1004,7 @@ async def test_user_config_flow_over_climate_valve(
     assert result.get("errors") is None
 
     # 2. Main
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "main"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "main"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "main"
     assert result.get("errors") == {}
@@ -1138,9 +1041,7 @@ async def test_user_config_flow_over_climate_valve(
     assert result.get("errors") is None
 
     # 4. Type
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "type"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "type"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "type"
     assert result.get("errors") == {}
@@ -1192,46 +1093,34 @@ async def test_user_config_flow_over_climate_valve(
     assert result["step_id"] == "menu"
 
     # 5. TPI
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "tpi"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "tpi"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "tpi"
     assert result.get("errors") == {}
 
     # 6. TPI 2
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_TPI_CENTRAL_CONFIG: False}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_TPI_CENTRAL_CONFIG: False})
 
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "tpi"
     assert result.get("errors") == {}
 
     # 7. Menu
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input=MOCK_TH_OVER_SWITCH_TPI_CONFIG
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input=MOCK_TH_OVER_SWITCH_TPI_CONFIG)
 
     # 8. Presets
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "presets"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "presets"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "presets"
     assert result.get("errors") == {}
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: False}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={CONF_USE_PRESETS_CENTRAL_CONFIG: False})
     assert result["type"] == FlowResultType.MENU
     assert result["step_id"] == "menu"
     assert result.get("errors") is None
 
     # 9. Features
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "features"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "features"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "features"
     assert result.get("errors") == {}
@@ -1264,9 +1153,7 @@ async def test_user_config_flow_over_climate_valve(
     ]
 
     # 10. Valve_regulation
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "valve_regulation"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "valve_regulation"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "valve_regulation"
     assert result.get("errors") == {}
@@ -1389,9 +1276,7 @@ async def test_user_config_flow_over_climate_valve(
     ]
 
     # 11. Advanced
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "advanced"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "advanced"})
     assert result["type"] == FlowResultType.FORM
     assert result["step_id"] == "advanced"
     assert result.get("errors") == {}
@@ -1488,9 +1373,7 @@ async def test_user_config_flow_over_climate_valve(
         "finalize",  # This time finalize is present
     ]
 
-    result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], user_input={"next_step_id": "finalize"}
-    )
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], user_input={"next_step_id": "finalize"})
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result.get("errors") is None
     assert result["data"] == MOCK_TH_OVER_CLIMATE_USER_CONFIG | MOCK_TH_OVER_CLIMATE_MAIN_CONFIG | MOCK_TH_OVER_CLIMATE_CENTRAL_MAIN_CONFIG | MOCK_TH_OVER_CLIMATE_TYPE_CONFIG | {

@@ -34,6 +34,7 @@ HVAC_ACTION_ON = [  # pylint: disable=invalid-name
     HVACAction.HEATING,
 ]
 
+
 class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
     """Representation of a base class for a Versatile Thermostat over a climate"""
 
@@ -46,9 +47,7 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
         ).union(FeatureAutoStartStopManager.unrecorded_attributes)
     )
 
-    def __init__(
-        self, hass: HomeAssistant, unique_id: str, name: str, entry_infos: ConfigData
-    ):
+    def __init__(self, hass: HomeAssistant, unique_id: str, name: str, entry_infos: ConfigData):
         """Initialize the thermostat over switch."""
         self._auto_regulation_mode: str | None = None
         self._regulation_algo = None
@@ -78,9 +77,7 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
     def post_init(self, config_entry: ConfigData):
         """Initialize the Thermostat"""
 
-        self._auto_start_stop_manager: FeatureAutoStartStopManager = (
-            FeatureAutoStartStopManager(self, self._hass)
-        )
+        self._auto_start_stop_manager: FeatureAutoStartStopManager = FeatureAutoStartStopManager(self, self._hass)
 
         self.register_manager(self._auto_start_stop_manager)
 
@@ -97,32 +94,14 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
         self._sync_entity_list = config_entry.get(CONF_SYNC_ENTITY_LIST, []) if config_entry.get(CONF_SYNC_DEVICE_INTERNAL_TEMP, False) else []
         self._sync_with_calibration = config_entry.get(CONF_SYNC_WITH_CALIBRATION, False)
 
-        self.choose_auto_regulation_mode(
-            config_entry.get(CONF_AUTO_REGULATION_MODE)
-            if config_entry.get(CONF_AUTO_REGULATION_MODE) is not None
-            else CONF_AUTO_REGULATION_NONE
-        )
+        self.choose_auto_regulation_mode(config_entry.get(CONF_AUTO_REGULATION_MODE) if config_entry.get(CONF_AUTO_REGULATION_MODE) is not None else CONF_AUTO_REGULATION_NONE)
 
-        self._auto_regulation_dtemp = (
-            config_entry.get(CONF_AUTO_REGULATION_DTEMP)
-            if config_entry.get(CONF_AUTO_REGULATION_DTEMP) is not None
-            else 0.5
-        )
-        self._auto_regulation_period_min = (
-            config_entry.get(CONF_AUTO_REGULATION_PERIOD_MIN)
-            if config_entry.get(CONF_AUTO_REGULATION_PERIOD_MIN) is not None
-            else 5
-        )
+        self._auto_regulation_dtemp = config_entry.get(CONF_AUTO_REGULATION_DTEMP) if config_entry.get(CONF_AUTO_REGULATION_DTEMP) is not None else 0.5
+        self._auto_regulation_period_min = config_entry.get(CONF_AUTO_REGULATION_PERIOD_MIN) if config_entry.get(CONF_AUTO_REGULATION_PERIOD_MIN) is not None else 5
 
-        self._auto_fan_mode = (
-            config_entry.get(CONF_AUTO_FAN_MODE)
-            if config_entry.get(CONF_AUTO_FAN_MODE) is not None
-            else CONF_AUTO_FAN_NONE
-        )
+        self._auto_fan_mode = config_entry.get(CONF_AUTO_FAN_MODE) if config_entry.get(CONF_AUTO_FAN_MODE) is not None else CONF_AUTO_FAN_NONE
 
-        self._auto_regulation_use_device_temp = config_entry.get(
-            CONF_AUTO_REGULATION_USE_DEVICE_TEMP, False
-        )
+        self._auto_regulation_use_device_temp = config_entry.get(CONF_AUTO_REGULATION_USE_DEVICE_TEMP, False)
 
     @property
     def is_over_climate(self) -> bool:
@@ -159,9 +138,7 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
         self.stop_recalculate_later()
 
         if self.vtherm_hvac_mode == VThermHvacMode_OFF:
-            _LOGGER.debug(
-                "%s - don't send regulated temperature cause VTherm is off ", self
-            )
+            _LOGGER.debug("%s - don't send regulated temperature cause VTherm is off ", self)
             # In this case, reset the timer of last regulation change to avoid time delta too high
             self._last_regulation_change = self.now
             return
@@ -310,16 +287,12 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
         if not self._auto_fan_mode or not self._auto_activated_fan_mode:
             return
 
-        dtemp = (
-            self.regulated_target_temp if self.is_regulated else self.target_temperature
-        )
+        dtemp = self.regulated_target_temp if self.is_regulated else self.target_temperature
         if dtemp is None or self.current_temperature is None:
             return
 
         dtemp = dtemp - self.current_temperature
-        should_activate_auto_fan = (
-            dtemp >= AUTO_FAN_DTEMP_THRESHOLD or dtemp <= -AUTO_FAN_DTEMP_THRESHOLD
-        )
+        should_activate_auto_fan = dtemp >= AUTO_FAN_DTEMP_THRESHOLD or dtemp <= -AUTO_FAN_DTEMP_THRESHOLD
 
         # deal with ac / non ac mode
         hvac_mode = self.vtherm_hvac_mode
@@ -334,10 +307,7 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
                 dtemp,
             )
             await self.async_set_fan_mode(self._auto_activated_fan_mode)
-        if (
-            not should_activate_auto_fan
-            and self.fan_mode not in AUTO_FAN_DEACTIVATED_MODES
-        ):
+        if not should_activate_auto_fan and self.fan_mode not in AUTO_FAN_DEACTIVATED_MODES:
             _LOGGER.info(
                 "%s - DeActivate the auto fan mode with %s because delta temp is %.2f",
                 self,
@@ -390,9 +360,7 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
                 RegulationParamSlow.overheat_protection,
             )
         elif self._auto_regulation_mode == CONF_AUTO_REGULATION_EXPERT:
-            api: VersatileThermostatAPI = VersatileThermostatAPI.get_vtherm_api(
-                self._hass
-            )
+            api: VersatileThermostatAPI = VersatileThermostatAPI.get_vtherm_api(self._hass)
             if api:
                 if (expert_param := api.self_regulation_expert) is not None:
                     self._regulation_algo = PITemperatureRegulator(
@@ -461,10 +429,7 @@ class ThermostatOverClimate(BaseThermostat[UnderlyingClimate]):
 
         # Remove special modes like "auto"
         fan_modes = self.fan_modes or []
-        speed_modes = [
-            mode for mode in fan_modes
-            if mode not in ["auto"]
-        ]
+        speed_modes = [mode for mode in fan_modes if mode not in ["auto"]]
 
         num_speeds = len(speed_modes)
         if num_speeds == 0:

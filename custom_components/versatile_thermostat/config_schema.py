@@ -61,9 +61,7 @@ def build_step_thermostat_switch_schema() -> vol.Schema:
                 selector.EntitySelectorConfig(domain=[SWITCH_DOMAIN, INPUT_BOOLEAN_DOMAIN, SELECT_DOMAIN, INPUT_SELECT_DOMAIN, CLIMATE_DOMAIN], multiple=True),
             ),
             vol.Optional(CONF_HEATER_KEEP_ALIVE): cv.positive_int,
-            vol.Required(CONF_PROP_FUNCTION, default=PROPORTIONAL_FUNCTION_TPI): vol.In(
-                get_prop_function_options()
-            ),
+            vol.Required(CONF_PROP_FUNCTION, default=PROPORTIONAL_FUNCTION_TPI): vol.In(get_prop_function_options()),
             vol.Optional(CONF_AC_MODE, default=False): cv.boolean,
             vol.Optional(CONF_INVERSE_SWITCH, default=False): cv.boolean,
             vol.Optional("on_command_text"): vol.In([]),
@@ -79,13 +77,9 @@ def build_step_thermostat_valve_schema() -> vol.Schema:
     return vol.Schema(
         {
             vol.Required(CONF_UNDERLYING_LIST): selector.EntitySelector(
-                selector.EntitySelectorConfig(
-                    domain=[NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN], multiple=True
-                ),
+                selector.EntitySelectorConfig(domain=[NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN], multiple=True),
             ),
-            vol.Required(CONF_PROP_FUNCTION, default=PROPORTIONAL_FUNCTION_TPI): vol.In(
-                get_prop_function_options()
-            ),
+            vol.Required(CONF_PROP_FUNCTION, default=PROPORTIONAL_FUNCTION_TPI): vol.In(get_prop_function_options()),
             vol.Optional(CONF_AC_MODE, default=False): cv.boolean,
             vol.Optional(CONF_AUTO_REGULATION_DTEMP, default=10): vol.Coerce(float),
             vol.Optional(CONF_AUTO_REGULATION_PERIOD_MIN, default=5): cv.positive_int,
@@ -103,9 +97,7 @@ def build_step_valve_regulation_schema() -> vol.Schema:
             vol.Optional(CONF_CLOSING_DEGREE_LIST): selector.EntitySelector(
                 selector.EntitySelectorConfig(domain=[NUMBER_DOMAIN, INPUT_NUMBER_DOMAIN], multiple=True),
             ),
-            vol.Required(CONF_PROP_FUNCTION, default=PROPORTIONAL_FUNCTION_TPI): vol.In(
-                get_prop_function_options()
-            ),
+            vol.Required(CONF_PROP_FUNCTION, default=PROPORTIONAL_FUNCTION_TPI): vol.In(get_prop_function_options()),
             vol.Optional(CONF_OPENING_THRESHOLD_DEGREE, default=0): cv.positive_int,
             vol.Optional(CONF_MIN_OPENING_DEGREES, default=""): str,
             vol.Optional(CONF_MAX_OPENING_DEGREES, default=""): str,
@@ -113,11 +105,10 @@ def build_step_valve_regulation_schema() -> vol.Schema:
         }
     )
 
+
 STEP_USER_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
     {
-        vol.Required(
-            CONF_THERMOSTAT_TYPE, default=CONF_THERMOSTAT_SWITCH
-        ): selector.SelectSelector(
+        vol.Required(CONF_THERMOSTAT_TYPE, default=CONF_THERMOSTAT_SWITCH): selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=CONF_THERMOSTAT_TYPES,
                 translation_key="thermostat_type",
@@ -137,7 +128,6 @@ STEP_MAIN_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
             selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_DATETIME_DOMAIN, NUMBER_DOMAIN]),
         ),
         vol.Required(CONF_CYCLE_MIN, default=5): selector.NumberSelector(selector.NumberSelectorConfig(min=1, max=1000, step=1, mode=selector.NumberSelectorMode.BOX)),
-
         vol.Optional(CONF_DEVICE_POWER, default="1"): vol.Coerce(float),
         vol.Required(CONF_USE_MAIN_CENTRAL_CONFIG, default=True): cv.boolean,
         vol.Optional(CONF_USE_CENTRAL_MODE, default=True): cv.boolean,
@@ -193,7 +183,6 @@ STEP_CENTRAL_MAIN_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
         ),
         vol.Required(CONF_TEMP_MIN, default=7): vol.Coerce(float),
         vol.Required(CONF_TEMP_MAX, default=35): vol.Coerce(float),
-
         vol.Required(CONF_STEP_TEMPERATURE, default=0.1): vol.Coerce(float),
     }
 )
@@ -205,7 +194,6 @@ STEP_CENTRAL_SPEC_MAIN_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
         ),
         vol.Required(CONF_TEMP_MIN, default=7): vol.Coerce(float),
         vol.Required(CONF_TEMP_MAX, default=35): vol.Coerce(float),
-
         vol.Required(CONF_STEP_TEMPERATURE, default=0.1): vol.Coerce(float),
     }
 )
@@ -226,20 +214,18 @@ STEP_CENTRAL_BOILER_SCHEMA = vol.Schema(
 STEP_THERMOSTAT_SWITCH = build_step_thermostat_switch_schema()  # pylint: disable=invalid-name
 
 STEP_THERMOSTAT_CLIMATE = vol.Schema(  # pylint: disable=invalid-name
-        {
-            vol.Required(CONF_UNDERLYING_LIST): selector.EntitySelector(
-                selector.EntitySelectorConfig(domain=CLIMATE_DOMAIN, multiple=True),
-            ),
-            vol.Optional(CONF_HUMIDITY_SENSOR): selector.EntitySelector(
-                selector.EntitySelectorConfig(
-                    domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]
-                ),
-            ),
-            vol.Optional(CONF_AC_MODE, default=False): cv.boolean,
-            vol.Optional(CONF_SYNC_DEVICE_INTERNAL_TEMP, default=False): cv.boolean,
-            vol.Optional(CONF_AUTO_REGULATION_MODE, default=CONF_AUTO_REGULATION_NONE): selector.SelectSelector(
-                selector.SelectSelectorConfig(
-                    options=CONF_AUTO_REGULATION_MODES,
+    {
+        vol.Required(CONF_UNDERLYING_LIST): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=CLIMATE_DOMAIN, multiple=True),
+        ),
+        vol.Optional(CONF_HUMIDITY_SENSOR): selector.EntitySelector(
+            selector.EntitySelectorConfig(domain=[SENSOR_DOMAIN, INPUT_NUMBER_DOMAIN, NUMBER_DOMAIN]),
+        ),
+        vol.Optional(CONF_AC_MODE, default=False): cv.boolean,
+        vol.Optional(CONF_SYNC_DEVICE_INTERNAL_TEMP, default=False): cv.boolean,
+        vol.Optional(CONF_AUTO_REGULATION_MODE, default=CONF_AUTO_REGULATION_NONE): selector.SelectSelector(
+            selector.SelectSelectorConfig(
+                options=CONF_AUTO_REGULATION_MODES,
                 translation_key="auto_regulation_mode",
                 mode="dropdown",
             )
@@ -261,9 +247,7 @@ STEP_THERMOSTAT_VALVE = build_step_thermostat_valve_schema()  # pylint: disable=
 
 STEP_AUTO_START_STOP = vol.Schema(  # pylint: disable=invalid-name
     {
-        vol.Optional(
-            CONF_AUTO_START_STOP_LEVEL, default=AUTO_START_STOP_LEVEL_NONE
-        ): selector.SelectSelector(
+        vol.Optional(CONF_AUTO_START_STOP_LEVEL, default=AUTO_START_STOP_LEVEL_NONE): selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=CONF_AUTO_START_STOP_LEVELS,
                 translation_key="auto_start_stop",
@@ -292,27 +276,15 @@ STEP_TPI_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
 
 STEP_CENTRAL_TPI_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
     {
-        vol.Required(CONF_TPI_COEF_INT, default=0.6): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.0, max=10.0, step="any", mode=selector.NumberSelectorMode.BOX
-            )
-        ),
-        vol.Required(CONF_TPI_COEF_EXT, default=0.01): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.0, max=1.0, step="any", mode=selector.NumberSelectorMode.BOX
-            )
-        ),
+        vol.Required(CONF_TPI_COEF_INT, default=0.6): selector.NumberSelector(selector.NumberSelectorConfig(min=0.0, max=10.0, step="any", mode=selector.NumberSelectorMode.BOX)),
+        vol.Required(CONF_TPI_COEF_EXT, default=0.01): selector.NumberSelector(selector.NumberSelectorConfig(min=0.0, max=1.0, step="any", mode=selector.NumberSelectorMode.BOX)),
         vol.Required(CONF_MINIMAL_ACTIVATION_DELAY, default=10): cv.positive_int,
         vol.Required(CONF_MINIMAL_DEACTIVATION_DELAY, default=0): cv.positive_int,
         vol.Optional(CONF_TPI_THRESHOLD_LOW, default=0): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX
-            )
+            selector.NumberSelectorConfig(min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX)
         ),
         vol.Optional(CONF_TPI_THRESHOLD_HIGH, default=0): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX
-            )
+            selector.NumberSelectorConfig(min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX)
         ),
         vol.Optional(CONF_AUTO_TPI_MODE, default=False): cv.boolean,
     }
@@ -322,27 +294,15 @@ STEP_CENTRAL_TPI_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
 # in central config but only in device config.
 STEP_CENTRAL_TPI_DATA_SCHEMA_CENTRAL = vol.Schema(  # pylint: disable=invalid-name
     {
-        vol.Required(CONF_TPI_COEF_INT, default=0.6): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.0, max=10.0, step=0.01, mode=selector.NumberSelectorMode.BOX
-            )
-        ),
-        vol.Required(CONF_TPI_COEF_EXT, default=0.01): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.0, max=1.0, step=0.001, mode=selector.NumberSelectorMode.BOX
-            )
-        ),
+        vol.Required(CONF_TPI_COEF_INT, default=0.6): selector.NumberSelector(selector.NumberSelectorConfig(min=0.0, max=10.0, step=0.01, mode=selector.NumberSelectorMode.BOX)),
+        vol.Required(CONF_TPI_COEF_EXT, default=0.01): selector.NumberSelector(selector.NumberSelectorConfig(min=0.0, max=1.0, step=0.001, mode=selector.NumberSelectorMode.BOX)),
         vol.Required(CONF_MINIMAL_ACTIVATION_DELAY, default=10): cv.positive_int,
         vol.Required(CONF_MINIMAL_DEACTIVATION_DELAY, default=0): cv.positive_int,
         vol.Optional(CONF_TPI_THRESHOLD_LOW, default=0): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX
-            )
+            selector.NumberSelectorConfig(min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX)
         ),
         vol.Optional(CONF_TPI_THRESHOLD_HIGH, default=0): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX
-            )
+            selector.NumberSelectorConfig(min=-10.0, max=10.0, step=0.1, mode=selector.NumberSelectorMode.BOX)
         ),
     }
 )
@@ -356,9 +316,7 @@ STEP_PRESETS_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
 STEP_WINDOW_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
     {
         vol.Optional(CONF_WINDOW_SENSOR): selector.EntitySelector(
-            selector.EntitySelectorConfig(
-                domain=[BINARY_SENSOR_DOMAIN, INPUT_BOOLEAN_DOMAIN]
-            ),
+            selector.EntitySelectorConfig(domain=[BINARY_SENSOR_DOMAIN, INPUT_BOOLEAN_DOMAIN]),
         ),
         vol.Required(CONF_USE_WINDOW_CENTRAL_CONFIG, default=True): cv.boolean,
     }
@@ -398,9 +356,7 @@ STEP_CENTRAL_WINDOW_WO_AUTO_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid
 STEP_MOTION_DATA_SCHEMA = vol.Schema(  # pylint: disable=invalid-name
     {
         vol.Required(CONF_MOTION_SENSOR): selector.EntitySelector(
-            selector.EntitySelectorConfig(
-                domain=[BINARY_SENSOR_DOMAIN, INPUT_BOOLEAN_DOMAIN]
-            ),
+            selector.EntitySelectorConfig(domain=[BINARY_SENSOR_DOMAIN, INPUT_BOOLEAN_DOMAIN]),
         ),
         vol.Required(CONF_USE_MOTION_CENTRAL_CONFIG, default=True): cv.boolean,
     }
@@ -539,9 +495,7 @@ STEP_HEATING_FAILURE_DETECTION_SCHEMA = vol.Schema(  # pylint: disable=invalid-n
 
 STEP_AUTO_TPI_CONFIGURATION_SCHEMA = vol.Schema(
     {
-        vol.Required(
-            CONF_AUTO_TPI_LEARNING_TYPE, default=AUTO_TPI_LEARNING_TYPE_DISCOVERY
-        ): selector.SelectSelector(
+        vol.Required(CONF_AUTO_TPI_LEARNING_TYPE, default=AUTO_TPI_LEARNING_TYPE_DISCOVERY): selector.SelectSelector(
             selector.SelectSelectorConfig(
                 options=CONF_AUTO_TPI_LEARNING_TYPES,
                 translation_key="auto_tpi_learning_type",
@@ -549,17 +503,13 @@ STEP_AUTO_TPI_CONFIGURATION_SCHEMA = vol.Schema(
             )
         ),
         vol.Required(CONF_AUTO_TPI_AGGRESSIVENESS, default=1.0): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.5, max=1.0, step=0.01, mode=selector.NumberSelectorMode.SLIDER
-            )
+            selector.NumberSelectorConfig(min=0.5, max=1.0, step=0.01, mode=selector.NumberSelectorMode.SLIDER)
         ),
         vol.Optional(CONF_AUTO_TPI_HEATER_HEATING_TIME, default=5): cv.positive_int,
         vol.Optional(CONF_AUTO_TPI_HEATER_COOLING_TIME, default=5): cv.positive_int,
         vol.Required(CONF_AUTO_TPI_HEATING_POWER, default=0.0): vol.Coerce(float),
         vol.Optional(CONF_AUTO_TPI_CONTINUOUS_KEXT, default=False): cv.boolean,
-        vol.Optional(
-            CONF_AUTO_TPI_ENABLE_ADVANCED_SETTINGS, default=False
-        ): cv.boolean,
+        vol.Optional(CONF_AUTO_TPI_ENABLE_ADVANCED_SETTINGS, default=False): cv.boolean,
     }
 )
 
@@ -573,21 +523,13 @@ STEP_AUTO_TPI_AVG_SETTINGS_SCHEMA = vol.Schema(
 STEP_AUTO_TPI_EMA_SETTINGS_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_AUTO_TPI_EMA_ALPHA, default=0.15): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.0, max=1.0, step=0.01, mode=selector.NumberSelectorMode.BOX
-            )
+            selector.NumberSelectorConfig(min=0.0, max=1.0, step=0.01, mode=selector.NumberSelectorMode.BOX)
         ),
-        vol.Required(
-            CONF_AUTO_TPI_EMA_DECAY_RATE, default=0.08
-        ): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.0, max=1.0, step=0.01, mode=selector.NumberSelectorMode.BOX
-            )
+        vol.Required(CONF_AUTO_TPI_EMA_DECAY_RATE, default=0.08): selector.NumberSelector(
+            selector.NumberSelectorConfig(min=0.0, max=1.0, step=0.01, mode=selector.NumberSelectorMode.BOX)
         ),
         vol.Required(CONF_AUTO_TPI_CONTINUOUS_KEXT_ALPHA, default=0.04): selector.NumberSelector(
-            selector.NumberSelectorConfig(
-                min=0.005, max=0.2, step=0.005, mode=selector.NumberSelectorMode.BOX
-            )
+            selector.NumberSelectorConfig(min=0.005, max=0.2, step=0.005, mode=selector.NumberSelectorMode.BOX)
         ),
     }
 )

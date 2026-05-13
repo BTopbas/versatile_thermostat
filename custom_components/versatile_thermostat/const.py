@@ -459,11 +459,7 @@ CONF_WINDOW_ACTIONS = [
     CONF_WINDOW_ECO_TEMP,
 ]
 
-SUPPORT_FLAGS = (
-    ClimateEntityFeature.TARGET_TEMPERATURE
-    | ClimateEntityFeature.TURN_OFF
-    | ClimateEntityFeature.TURN_ON
-)
+SUPPORT_FLAGS = ClimateEntityFeature.TARGET_TEMPERATURE | ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
 
 SERVICE_SET_PRESENCE = "set_presence"
 SERVICE_SET_SAFETY = "set_safety"
@@ -535,24 +531,18 @@ MSG_TARGET_TEMP_ABSENCE_DETECTED = "target_temp_absence_detected"
 MSG_TARGET_TEMP_TIMED_PRESET = "target_temp_timed_preset"
 MSG_NOT_INITIALIZED = "not_initialized"
 
+
 #  A special regulation parameter suggested by @Maia here: https://github.com/jmcollin78/versatile_thermostat/discussions/154
 class RegulationParamSlow:
     """Light parameters for slow latency regulation"""
 
-    kp: float = (
-        0.2  # 20% of the current internal regulation offset are caused by the current difference of target temperature and room temperature
-    )
-    ki: float = (
-        0.8 / 288.0
-    )  # 80% of the current internal regulation offset are caused by the average offset of the past 24 hours
-    k_ext: float = (
-        1.0 / 25.0
-    )  # this will add 1°C to the offset when it's 25°C colder outdoor than indoor
+    kp: float = 0.2  # 20% of the current internal regulation offset are caused by the current difference of target temperature and room temperature
+    ki: float = 0.8 / 288.0  # 80% of the current internal regulation offset are caused by the average offset of the past 24 hours
+    k_ext: float = 1.0 / 25.0  # this will add 1°C to the offset when it's 25°C colder outdoor than indoor
     offset_max: float = 2.0  # limit to a final offset of -2°C to +2°C
-    accumulated_error_threshold: float = (
-        2.0 * 288
-    )  # this allows up to 2°C long term offset in both directions
+    accumulated_error_threshold: float = 2.0 * 288  # this allows up to 2°C long term offset in both directions
     overheat_protection: bool = True
+
 
 class RegulationParamLight:
     """Light parameters for regulation"""
@@ -601,6 +591,7 @@ class RegulationParamVeryStrong:
     offset_max: float = 8
     accumulated_error_threshold: float = 80
     overheat_protection: bool = True
+
 
 def send_vtherm_event(hass, event_type: EventType, entity, data: dict):
     """Send an event"""

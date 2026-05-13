@@ -154,21 +154,15 @@ async def test_bug_82(hass: HomeAssistant, skip_hass_states_is_state, skip_turn_
         # Force safety mode
         assert entity._last_ext_temperature_measure is not None
         assert entity._last_temperature_measure is not None
-        assert (
-            entity._last_temperature_measure.astimezone(tz) - now
-        ).total_seconds() < 1
-        assert (
-            entity._last_ext_temperature_measure.astimezone(tz) - now
-        ).total_seconds() < 1
+        assert (entity._last_temperature_measure.astimezone(tz) - now).total_seconds() < 1
+        assert (entity._last_ext_temperature_measure.astimezone(tz) - now).total_seconds() < 1
 
         # Tries to turns on the Thermostat
         await entity.async_set_hvac_mode(VThermHvacMode_HEAT)
         assert entity.hvac_mode == VThermHvacMode_HEAT
 
         # 2. activate security feature when date is expired
-        with patch(
-            "custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event"
-        ) as mock_send_event, patch(
+        with patch("custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event") as mock_send_event, patch(
             "custom_components.versatile_thermostat.underlyings.UnderlyingSwitch.turn_on"
         ):
             event_timestamp = now - timedelta(minutes=6)
@@ -473,9 +467,7 @@ async def test_bug_615(
         assert vtherm.target_temperature == vtherm.min_temp
         assert vtherm.preset_mode == VThermPreset.BOOST
 
-    with patch(
-        "custom_components.versatile_thermostat.underlyings.UnderlyingClimate.set_hvac_mode"
-    ) as mock_underlying_set_hvac_mode:
+    with patch("custom_components.versatile_thermostat.underlyings.UnderlyingClimate.set_hvac_mode") as mock_underlying_set_hvac_mode:
         # 2. Change the target temp of underlying thermostat at now + 1 min
         now = now + timedelta(minutes=1)
         await send_climate_change_event_with_temperature(
@@ -599,6 +591,8 @@ async def test_bug_508(
     entity.remove_thermostat()
 
 
+@pytest.mark.parametrize("expected_lingering_tasks", [True])
+@pytest.mark.parametrize("expected_lingering_timers", [True])
 async def test_over_climate_current_humidity_uses_configured_sensor(
     hass: HomeAssistant,
     skip_hass_states_is_state,
@@ -613,8 +607,7 @@ async def test_over_climate_current_humidity_uses_configured_sensor(
         domain=DOMAIN,
         title="TheOverClimateMockName",
         unique_id="uniqueId",
-        data=PARTIAL_CLIMATE_NOT_REGULATED_CONFIG
-        | {CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor"},
+        data=PARTIAL_CLIMATE_NOT_REGULATED_CONFIG | {CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor"},
     )
 
     await create_and_register_mock_climate(
@@ -631,9 +624,7 @@ async def test_over_climate_current_humidity_uses_configured_sensor(
         SENSOR_DOMAIN,
     )
 
-    entity: ThermostatOverClimate = await create_thermostat(
-        hass, entry, "climate.theoverclimatemockname"
-    )
+    entity: ThermostatOverClimate = await create_thermostat(hass, entry, "climate.theoverclimatemockname")
 
     assert entity.current_humidity == 55
     assert hass.states.get(entity.entity_id).attributes["current_humidity"] == 55
@@ -646,6 +637,8 @@ async def test_over_climate_current_humidity_uses_configured_sensor(
     entity.remove_thermostat()
 
 
+@pytest.mark.parametrize("expected_lingering_tasks", [True])
+@pytest.mark.parametrize("expected_lingering_timers", [True])
 async def test_over_climate_current_humidity_falls_back_to_underlying_when_sensor_unavailable(
     hass: HomeAssistant,
     skip_hass_states_is_state,
@@ -660,8 +653,7 @@ async def test_over_climate_current_humidity_falls_back_to_underlying_when_senso
         domain=DOMAIN,
         title="TheOverClimateMockName",
         unique_id="uniqueId",
-        data=PARTIAL_CLIMATE_NOT_REGULATED_CONFIG
-        | {CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor"},
+        data=PARTIAL_CLIMATE_NOT_REGULATED_CONFIG | {CONF_HUMIDITY_SENSOR: "sensor.mock_humidity_sensor"},
     )
 
     await create_and_register_mock_climate(
@@ -678,9 +670,7 @@ async def test_over_climate_current_humidity_falls_back_to_underlying_when_senso
         SENSOR_DOMAIN,
     )
 
-    entity: ThermostatOverClimate = await create_thermostat(
-        hass, entry, "climate.theoverclimatemockname"
-    )
+    entity: ThermostatOverClimate = await create_thermostat(hass, entry, "climate.theoverclimatemockname")
 
     unavailable_event = Event(
         EVENT_STATE_CHANGED,
@@ -693,11 +683,17 @@ async def test_over_climate_current_humidity_falls_back_to_underlying_when_senso
             )
         },
     )
-    await entity._async_humidity_changed(unavailable_event)
-    await hass.async_block_till_done()
+    with patch.object(
+        type(entity.underlying_entity(0)),
+        "current_humidity",
+        new_callable=PropertyMock,
+        return_value=40,
+    ):
+        await entity._async_humidity_changed(unavailable_event)
+        await hass.async_block_till_done()
 
-    assert entity.current_humidity == 40
-    assert hass.states.get(entity.entity_id).attributes["current_humidity"] == 40
+        assert entity.current_humidity == 40
+        assert hass.states.get(entity.entity_id).attributes["current_humidity"] == 40
 
     entity.remove_thermostat()
 
@@ -813,6 +809,7 @@ async def test_bug_524(hass: HomeAssistant, skip_hass_states_is_state):
     assert vtherm.target_temperature == 25
 
     vtherm.remove_thermostat()
+
 
 async def test_ignore_temp_outside_minmax_range(
     hass: HomeAssistant,
@@ -962,9 +959,8 @@ async def test_ignore_temp_outside_minmax_range(
 
     entity.remove_thermostat()
 
-async def test_manual_hvac_off_should_take_the_lead_over_window(
-    hass: HomeAssistant, skip_hass_states_is_state
-):
+
+async def test_manual_hvac_off_should_take_the_lead_over_window(hass: HomeAssistant, skip_hass_states_is_state):
     """Test than a manual hvac_off is taken into account over a window hvac_off"""
 
     # The temperatures to set
@@ -1058,15 +1054,11 @@ async def test_manual_hvac_off_should_take_the_lead_over_window(
 
     # 2. Open the window and wait for the delay
     now = now + timedelta(minutes=2)
-    with patch(
-        "custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event"
-    ) as mock_send_event, patch(
+    with patch("custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event") as mock_send_event, patch(
         "homeassistant.helpers.condition.state", return_value=True
     ):
         vtherm._set_now(now)
-        try_function = await send_window_change_event(
-            vtherm, True, False, now, sleep=False
-        )
+        try_function = await send_window_change_event(vtherm, True, False, now, sleep=False)
 
         await try_function(None)
 
@@ -1082,9 +1074,7 @@ async def test_manual_hvac_off_should_take_the_lead_over_window(
     # 3. Turn off manually the VTherm. This should be taken into account
     now = now + timedelta(minutes=1)
     vtherm._set_now(now)
-    with patch(
-        "custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event"
-    ) as mock_send_event:
+    with patch("custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event") as mock_send_event:
         await vtherm.async_set_hvac_mode(VThermHvacMode_OFF)
         await wait_for_local_condition(lambda: vtherm.hvac_off_reason == HVAC_OFF_REASON_MANUAL)
 
@@ -1104,14 +1094,10 @@ async def test_manual_hvac_off_should_take_the_lead_over_window(
     # 4. close the window -> we should stay off reason manual
     now = now + timedelta(minutes=1)
     vtherm._set_now(now)
-    with patch(
-        "custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event"
-    ) as mock_send_event, patch(
+    with patch("custom_components.versatile_thermostat.base_thermostat.BaseThermostat.send_event") as mock_send_event, patch(
         "homeassistant.helpers.condition.state", return_value=True
     ):
-        try_function = await send_window_change_event(
-            vtherm, False, True, now, sleep=False
-        )
+        try_function = await send_window_change_event(vtherm, False, True, now, sleep=False)
 
         await try_function(None)
 
@@ -1124,6 +1110,7 @@ async def test_manual_hvac_off_should_take_the_lead_over_window(
         assert mock_send_event.call_count == 0
 
     vtherm.remove_thermostat()
+
 
 async def test_multi_climate(
     hass: HomeAssistant,
@@ -1393,10 +1380,11 @@ async def test_under_climate_is_device_active(
     under.state_manager.get_state = MagicMock(return_value=under_state)
 
     # Use patch.object to avoid permanently modifying the UnderlyingClimate class
-    with patch.object(type(under), "is_initialized", new_callable=PropertyMock, return_value=True), \
-         patch.object(type(under), "underlying_target_temperature", new_callable=PropertyMock, return_value=target_temp), \
-         patch.object(type(under), "underlying_current_temperature", new_callable=PropertyMock, return_value=current_temp), \
-         patch.object(type(under), "underlying_hvac_action", new_callable=PropertyMock, return_value=hvac_action):
+    with patch.object(type(under), "is_initialized", new_callable=PropertyMock, return_value=True), patch.object(
+        type(under), "underlying_target_temperature", new_callable=PropertyMock, return_value=target_temp
+    ), patch.object(type(under), "underlying_current_temperature", new_callable=PropertyMock, return_value=current_temp), patch.object(
+        type(under), "underlying_hvac_action", new_callable=PropertyMock, return_value=hvac_action
+    ):
 
         # Test the is_device_active property with the given configuration
         result = under.is_device_active
